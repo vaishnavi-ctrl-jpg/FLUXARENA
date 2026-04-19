@@ -140,6 +140,27 @@ Smart Recommendations
 - **Google Antigravity**: AI agent assistance and codebase orchestration
 - **Google Cloud Run**: Managed compute environment for scaling the application
 - **Gemini API**: Context-aware AI recommendations using Gemini 2.5 Flash models
+- **Google Firebase**: Platform initialization for backend SDK integrations
+
+---
+
+## 🛡️ Security & Accessibility
+
+**Security Protocols**
+- Strict Transport Security (HSTS) implemented across all Next.js bounds.
+- API payload thresholds and strictly validated JSON schemas.
+- X-DNS-Prefetch and X-Frame-Options configured to deter clickjacking and injection.
+
+**Accessibility (a11y)**
+- 100% semantic HTML5 layout structure compliant with WAI-ARIA standards.
+- `aria-live="polite"` regions enabled for dynamic screen reader AI processing.
+- Full keyboard `<label>` controls and indexing over dynamic action grids.
+
+---
+
+## 🧪 Testing
+
+Comprehensive **Jest** and **React Testing Library** (RTL) suites mapped across the components to verify visual state logic and accessibility DOM rendering compliance before builds.
 
 ---
 
