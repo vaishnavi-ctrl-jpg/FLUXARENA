@@ -50,7 +50,9 @@ You MUST respond strictly in valid JSON format with exactly three fields:
 
     const response = await Promise.race([responsePromise, timeoutPromise]);
     
-    let rawResponse = response.text;
+    // Ensure rawResponse is always a string to satisfy TypeScript
+    let rawResponse = response.text || "{}";
+    
     let parsedResponse;
     try {
       parsedResponse = JSON.parse(rawResponse);
