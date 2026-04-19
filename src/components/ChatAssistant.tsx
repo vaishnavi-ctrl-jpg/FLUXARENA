@@ -79,18 +79,23 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ isOpen, onClose, d
 
   return (
     <>
-      <div className={`chat-assistant-sheet glass ${isOpen ? 'open' : ''}`}>
-        <div className="sheet-handle" onClick={onClose}></div>
+      <section 
+        className={`chat-assistant-sheet glass ${isOpen ? 'open' : ''}`}
+        aria-hidden={!isOpen}
+        role="dialog"
+        aria-label="AI Assistant Interface"
+      >
+        <div className="sheet-handle" onClick={onClose} role="button" aria-label="Close Assistant Sheet" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onClose()}></div>
         
         <div className="chat-header">
           <div className="header-logo">
             <Image src="/logo-v27.png" alt="" width={22} height={22} quality={100} />
             <span className="gradient-text-cyan">AI ASSISTANT</span>
           </div>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose} aria-label="Close UI">×</button>
         </div>
 
-        <div className="messages-list">
+        <div className="messages-list" aria-live="polite" aria-atomic="false">
           {messages.map((msg, idx) => (
             <div key={idx} className={`chat-line ${msg.role}`}>
               {msg.role === 'assistant' && (
@@ -125,15 +130,16 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ isOpen, onClose, d
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               disabled={isRecording}
+              aria-label="AI Chat Input"
             />
-            <button className={`mic-btn ${isRecording ? 'pulse-red' : ''}`} onClick={toggleMic}>
+            <button className={`mic-btn ${isRecording ? 'pulse-red' : ''}`} onClick={toggleMic} aria-label={isRecording ? "Stop Recording" : "Start Recording"}>
               {isRecording ? '🔴' : '🎙️'}
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={onClose}></div>
+      <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={onClose} aria-hidden="true"></div>
 
       <style jsx>{`
         .chat-assistant-sheet {

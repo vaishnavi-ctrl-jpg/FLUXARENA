@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { MobileFrame } from '@/components/MobileFrame';
 import { StadiumMap } from '@/components/StadiumMap';
 import { QuickActions } from '@/components/QuickActions';
 import { ChatAssistant } from '@/components/ChatAssistant';
 import { TopStatus } from '@/components/TopStatus';
+import { initFirebase } from '@/firebase';
 
 export default function Home() {
   const [densityData, setDensityData] = useState<Record<string, number>>({});
@@ -18,6 +19,11 @@ export default function Home() {
     temp: '22°C',
     action: 'Move in 2 mins'
   });
+
+  useEffect(() => {
+    // Initialize google services
+    initFirebase();
+  }, []);
 
   const simulateSurge = () => {
     const newData: Record<string, number> = {};
@@ -56,18 +62,18 @@ export default function Home() {
     <MobileFrame>
       <div className="dashboard-v3">
         {/* Row 1: Grid Header */}
-        <header className="grid-header">
+        <header className="grid-header" role="banner">
           <div className="branding-container">
-            <Image src="/logo-v27.png" alt="" width={40} height={40} className="logo-eye" priority quality={100} />
-            <Image src="/text-v25.png" alt="FluxArena" width={170} height={170} className="logo-text" priority quality={100} />
+            <Image src="/logo-v27.png" alt="FluxArena Logo Eye" width={40} height={40} className="logo-eye" priority quality={100} />
+            <Image src="/text-v25.png" alt="FluxArena Name" width={170} height={170} className="logo-text" priority quality={100} />
           </div>
-          <button className="simulate-btn glass" onClick={simulateSurge}>
+          <button className="simulate-btn glass" onClick={simulateSurge} aria-label="Simulate Crowd Surge">
             Simulate Surge
           </button>
         </header>
 
         {/* Row 2: Status */}
-        <div className="status-row">
+        <div className="status-row" aria-live="polite">
           <TopStatus 
             density={status.density} 
             temperature={status.temp} 
@@ -76,7 +82,7 @@ export default function Home() {
         </div>
 
         {/* Row 3: Main View (Map) */}
-        <main className="view-row">
+        <main className="view-row" role="main" aria-label="Stadium Heatmap">
           <StadiumMap 
             densityData={densityData} 
             showRoute={showRoute} 
@@ -85,15 +91,15 @@ export default function Home() {
         </main>
 
         {/* Row 4: Actions */}
-        <div className="actions-row">
+        <nav className="actions-row" aria-label="Quick Actions">
           <QuickActions onAction={handleAction} />
-        </div>
+        </nav>
 
         {/* Row 5: Footer */}
-        <footer className="footer-row">
-          <button className="ai-footer-btn glass" onClick={() => setIsAiOpen(true)}>
+        <footer className="footer-row" role="contentinfo">
+          <button className="ai-footer-btn glass" onClick={() => setIsAiOpen(true)} aria-haspopup="dialog" aria-expanded={isAiOpen}>
             <div className="btn-content">
-              <Image src="/logo-v27.png" alt="" width={24} height={24} className="pulse-slow" quality={100} />
+              <Image src="/logo-v27.png" alt="AI Agent Icon" width={24} height={24} className="pulse-slow" quality={100} />
               <span>Open AI Assistant</span>
             </div>
           </button>

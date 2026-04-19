@@ -8,8 +8,15 @@ export async function POST(req: NextRequest) {
   
   try {
     const rawBody = await req.text();
+    if (!rawBody || rawBody.length > 5000) {
+      return NextResponse.json({ error: "Payload too large or empty" }, { status: 400 });
+    }
     const body = JSON.parse(rawBody);
     const { messages, densityData } = body;
+    
+    if (!messages || !Array.isArray(messages)) {
+      return NextResponse.json({ error: "Invalid request schema" }, { status: 400 });
+    }
     fallbackDensityData = densityData || {};
     
     // Get latest user prompt
