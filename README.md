@@ -135,6 +135,14 @@ Smart Recommendations
 
 ---
 
+## ☁️ Google Services Used
+
+- **Google Antigravity**: AI agent assistance and codebase orchestration
+- **Google Cloud Run**: Managed compute environment for scaling the application
+- **Gemini API**: Context-aware AI recommendations using Gemini 2.5 Flash models
+
+---
+
 ## 📂 Project Structure
 
 ```bash
@@ -239,11 +247,9 @@ This project addresses:
 
 ## 📸 Demo
 
-Add links here:
-
-- Live Preview: (Add deployment link)
-- Demo Video: (Optional)
-- Screenshots: (Add images)
+- Live Preview: [https://fluxarena-697706610249.asia-south1.run.app/](https://fluxarena-697706610249.asia-south1.run.app/)
+- Google Cloud Project: `phrasal-alpha-493811-m4`
+- Project Number: `697706610249`
 
 ---
 

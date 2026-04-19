@@ -100,7 +100,7 @@ export default function Home() {
         </footer>
 
         {/* Overlays */}
-        <ChatAssistant isOpen={isAiOpen} onClose={() => setIsAiOpen(false)} />
+        <ChatAssistant isOpen={isAiOpen} onClose={() => setIsAiOpen(false)} densityData={densityData} />
       </div>
 
       <style jsx>{`

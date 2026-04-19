@@ -3,31 +3,67 @@ import Image from 'next/image';
 
 interface Message {
   role: 'assistant' | 'user';
-  text: string;
+  text?: string;
+  data?: {
+    Recommendation: string;
+    Reasoning: string;
+    Confidence: number;
+  };
 }
 
 interface ChatAssistantProps {
   isOpen: boolean;
   onClose: () => void;
+  densityData?: Record<string, number>;
 }
 
-export const ChatAssistant: React.FC<ChatAssistantProps> = ({ isOpen, onClose }) => {
+export const ChatAssistant: React.FC<ChatAssistantProps> = ({ isOpen, onClose, densityData }) => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', text: 'Hello! I am your FluxArena AI. How can I help you navigate the stadium today?' }
+    { role: 'assistant', data: { Recommendation: 'Welcome to FluxArena AI', Reasoning: 'I am ready to help you navigate.', Confidence: 100 } }
   ]);
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
     const newMessages: Message[] = [...messages, { role: 'user', text: input }];
     setMessages(newMessages);
     setInput('');
+    setIsRecording(true);
 
-    setTimeout(() => {
-      setMessages([...newMessages, { role: 'assistant', text: 'Analyzing metadata... Recommended: Use South Gate for 40% faster entry.' }]);
-    }, 1000);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages,
+          densityData: densityData || {}
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!res.ok) throw new Error('API Error');
+      const data = await res.json();
+
+      setMessages([...newMessages, { role: 'assistant', data }]);
+    } catch (err) {
+      setMessages([...newMessages, {
+        role: 'assistant', 
+        data: {
+           Recommendation: 'Please monitor local crowd screens.',
+           Reasoning: 'Client fallback triggered (API unreachable or timeout).',
+           Confidence: 50
+        }
+      }]);
+    } finally {
+      setIsRecording(false);
+    }
   };
 
   const toggleMic = () => {
@@ -63,7 +99,17 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ isOpen, onClose })
                 </div>
               )}
               <div className={`bubble glass ${msg.role}`}>
-                {msg.text}
+                {msg.role === 'user' ? (
+                  msg.text
+                ) : msg.data ? (
+                  <div className="structured-response">
+                    <div className="rec"><span className="label">Recommendation:</span> {msg.data.Recommendation}</div>
+                    <div className="reason"><span className="label">Reasoning:</span> {msg.data.Reasoning}</div>
+                    <div className="conf"><span className="label">Confidence:</span> {msg.data.Confidence}%</div>
+                  </div>
+                ) : (
+                  msg.text
+                )}
               </div>
             </div>
           ))}
@@ -265,6 +311,31 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ isOpen, onClose })
         .overlay.show {
           opacity: 1;
           pointer-events: auto;
+        }
+
+        .structured-response {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .structured-response .label {
+          font-weight: 700;
+          color: #00f3ff;
+          font-size: 13px;
+          text-transform: uppercase;
+        }
+
+        .structured-response .rec {
+          font-weight: 600;
+          color: #fff;
+          font-size: 15px;
+          margin-bottom: 4px;
+        }
+        
+        .structured-response .reason, .structured-response .conf {
+          font-size: 13px;
+          color: rgba(255, 255, 255, 0.85);
         }
       `}</style>
     </>
