@@ -10,7 +10,7 @@ const firebaseConfig = {
   appId: "1:123456789:web:abcdef123456"
 };
 
-let app;
+let app: any = null;
 
 export const initFirebase = () => {
   if (!app) {
